@@ -3,6 +3,7 @@ import Upload from "./components/Upload";
 import JobStatus from "./components/JobStatus";
 import "./App.css";
 import { io } from "socket.io-client";
+import { API_BASE_URL } from "./api";
 
 export default function App() {
     const getStatusColor = (status) => {
@@ -22,7 +23,7 @@ export default function App() {
     const [selectedJob, setSelectedJob] = useState(null);
 
     useEffect(() => {
-        const socket = io("http://localhost:5001");
+        const socket = io(API_BASE_URL);
 
         socket.on("job-update", (data) => {
             setJobs((prev) =>
