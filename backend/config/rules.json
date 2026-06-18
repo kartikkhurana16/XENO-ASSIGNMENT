@@ -1,0 +1,8 @@
+{
+  "phoneRules": {
+    "IN": 10,
+    "SG": 8
+  },
+  "dateFormat": "YYYY-MM-DD",
+  "requiredFields": ["name", "age", "city", "phone", "country", "date"]
+}
