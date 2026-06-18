@@ -22,7 +22,6 @@ services:
   - type: web
     name: xeno-frontend
     runtime: static
-    plan: free
     rootDir: verifier
     buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
