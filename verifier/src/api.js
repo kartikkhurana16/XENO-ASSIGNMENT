@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// Get API URL from environment or default to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+
 const API = axios.create({
-    baseURL: "http://localhost:5001/api"
+    baseURL: `${API_BASE_URL}/api`
 });
 
 export const uploadCSV = (formData) =>
@@ -23,7 +26,7 @@ export const listOutputFiles = () =>
 export const triggerDownload = async (filePath, filename) => {
     try {
         const response = await axios.get(
-            `http://localhost:5001/api/download-file`,
+            `${API_BASE_URL}/api/download-file`,
             {
                 params: { filePath },
                 responseType: 'blob'

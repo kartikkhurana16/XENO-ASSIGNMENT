@@ -1,0 +1,65 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules
+npm-debug.log
+npm-error.log
+yarn-error.log
+
+# Vite build
+dist
+build
+.vite
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Output directories
+backend/uploads/*
+backend/outputs/*
+!backend/uploads/.gitkeep
+!backend/outputs/.gitkeep
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Next.js
+.next
+out
+
+# Vercel
+.vercel
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Coverage
+coverage
+.nyc_output
+
+# Misc
+.cache
+*.bak
+*.tmp
