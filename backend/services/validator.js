@@ -31,11 +31,14 @@ const validateEmail = (email) => {
 // 3. PHONE VALIDATION (Country-specific with format)
 const validatePhone = (phone, country) => {
     if (!phone) return { valid: false, error: "Phone is required" };
-    if (!country) return { valid: false, error: "Country is required" };
+    // fallback to default country if not provided
+    const effectiveCountry = country || (rules.commonRules && rules.commonRules.defaultCountry) || null;
 
-    const rule = rules.phoneRules[country];
+    if (!effectiveCountry) return { valid: false, error: "Country is required" };
+
+    const rule = rules.phoneRules[effectiveCountry];
     if (!rule) {
-        return { valid: false, error: `Unsupported country code: ${country}` };
+        return { valid: false, error: `Unsupported country code: ${effectiveCountry}` };
     }
 
     const phoneStr = phone.toString().trim();
@@ -179,6 +182,7 @@ const detectTransactionType = (row) => {
     if (keys.includes("order_id") && keys.includes("customer_name")) return "order";
     if (keys.includes("product_id") && keys.includes("product_name")) return "product";
     if (keys.includes("transaction_id") && keys.includes("payment_mode")) return "payment";
+    if (keys.includes("customer_id") && (keys.includes("customer_name") || keys.includes("full_name"))) return "customer";
     
     return null;
 };
@@ -255,6 +259,22 @@ const validateTransaction = (row, transactionType) => {
         }
         if (row.payment_date) {
             const dateCheck = validateDate(row.payment_date);
+            if (!dateCheck.valid) errors.push(dateCheck.error);
+        }
+    } else if (transactionType === "customer") {
+        // Validate phone with default country fallback
+        if (row.customer_phone) {
+            const phoneCheck = validatePhone(row.customer_phone, row.customer_country);
+            if (!phoneCheck.valid) errors.push(phoneCheck.error);
+        }
+        // Validate email if present
+        if (row.customer_email) {
+            const emailCheck = validateEmail(row.customer_email);
+            if (!emailCheck.valid) errors.push(emailCheck.error);
+        }
+        // Validate signup date
+        if (row.signup_date) {
+            const dateCheck = validateDate(row.signup_date);
             if (!dateCheck.valid) errors.push(dateCheck.error);
         }
     }

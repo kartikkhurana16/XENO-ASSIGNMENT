@@ -20,8 +20,17 @@ exports.uploadCSV = async (req, res) => {
         // 3. get io instance
         const io = req.app.get("io");
 
+        if (!io) {
+            return res.status(500).json({
+                success: false,
+                message: "Socket.IO instance not configured"
+            });
+        }
+
         // 4. start async processing (DO NOT await)
-        runJob(jobId, req.file.path, io);
+        runJob(jobId, req.file.path, io).catch(err => {
+            console.error(`Job ${jobId} failed:`, err);
+        });
 
         // 5. respond immediately (NO result here)
         return res.status(200).json({
@@ -35,7 +44,8 @@ exports.uploadCSV = async (req, res) => {
 
         return res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: "Internal server error",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 };
