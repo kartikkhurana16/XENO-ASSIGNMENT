@@ -24,10 +24,13 @@ const server = http.createServer(app);
 
 // -------------------- ENV --------------------
 const PORT = process.env.PORT || 5001;
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+const CLIENT_URL =
+    process.env.CLIENT_URL ||
+    process.env.CORS_ORIGIN ||
+    "http://localhost:5173";
 
 // allow multiple origins if needed (comma-separated in env)
-const allowedOrigins = CLIENT_URL.split(",");
+const allowedOrigins = CLIENT_URL.split(",").map((o) => o.trim()).filter(Boolean);
 
 // -------------------- CORS (EXPRESS) --------------------
 app.use(cors({
