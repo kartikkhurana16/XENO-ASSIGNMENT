@@ -1,22 +1,23 @@
 import { useState, useEffect } from "react";
 import Upload from "./components/Upload";
 import JobStatus from "./components/JobStatus";
-import "./style.css";
+import "./App.css";
 import { io } from "socket.io-client";
 
 export default function App() {
-  const getStatusColor = (status) => {
-    switch (status) {
-        case "processing":
-            return "orange";
-        case "done":
-            return "green";
-        case "failed":
-            return "red";
-        default:
-            return "gray";
-    }
-};
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "processing":
+                return "orange";
+            case "done":
+                return "green";
+            case "failed":
+                return "red";
+            default:
+                return "gray";
+        }
+    };
+
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
 
@@ -24,14 +25,14 @@ export default function App() {
         const socket = io("http://localhost:5001");
 
         socket.on("job-update", (data) => {
-    setJobs((prev) =>
-        prev.map((job) =>
-            job.jobId === data.jobId
-                ? { ...job, status: data.status }
-                : job
-        )
-    );
-});
+            setJobs((prev) =>
+                prev.map((job) =>
+                    job.jobId === data.jobId
+                        ? { ...job, status: data.status }
+                        : job
+                )
+            );
+        });
 
         return () => {
             socket.disconnect();
@@ -50,54 +51,61 @@ export default function App() {
     };
 
     return (
-        <div className="container">
-            <h1>CSV Processing System</h1>
+        <div className="app">
 
-            {/* Upload */}
-            <div className="card">
-                <Upload addJob={addJob} />
-            </div>
+            {/* MAIN CONTENT */}
+            <main className="app-main">
+                <div className="container">
+                    {/* UPLOAD CARD */}
+                    <section className="card upload-card">
+                        <Upload addJob={addJob} />
+                    </section>
 
-            {jobs.length > 0 && (
-              <div className="card">
-                  <h2>Job History</h2>
+                    {/* JOB HISTORY */}
+                    {jobs.length > 0 && (
+                        <section className="card history-card">
+                            <h2>Processing</h2>
+                            <div className="jobs-list">
+                                {jobs.map((job) => (
+                                    <div
+                                        key={job.jobId}
+                                        className={`job-item ${selectedJob === job.jobId ? 'active' : ''}`}
+                                        onClick={() => setSelectedJob(job.jobId)}
+                                    >
+                                        <div className="job-info">
+                                            <div className="job-id">{job.jobId.substring(0, 8)}...</div>
+                                            <div className="job-time">{job.createdAt}</div>
+                                        </div>
+                                        <span
+                                            className="job-status"
+                                            style={{ color: getStatusColor(job.status) }}
+                                        >
+                                            {job.status.toUpperCase()}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
 
-                  {jobs.map((job) => (
-                      <div
-                          key={job.jobId}
-                          onClick={() => setSelectedJob(job.jobId)}
-                          style={{
-                              padding: "10px",
-                              marginBottom: "8px",
-                              border: "1px solid #ddd",
-                              cursor: "pointer",
-                              background:
-                                  selectedJob === job.jobId ? "#e3f2fd" : "white"
-                          }}
-                      >
-                          {/* Job ID */}
-                          <b>{job.jobId}</b>
-
-                          {/* Status */}
-                          <span style={{ float: "right", color: getStatusColor(job.status) }}>
-                              {job.status}
-                          </span>
-
-                          <br />
-
-                          {/* Timestamp */}
-                          <small>{job.createdAt}</small>
-                      </div>
-                  ))}
-              </div>
-          )}
-
-            {/* Active Job View */}
-            {selectedJob && (
-                <div className="card">
-                    <JobStatus jobId={selectedJob} />
+                    {/* ACTIVE JOB VIEW */}
+                    {selectedJob && (
+                        <section className="card details-card">
+                            <div className="details-header">
+                                <h2>Job Details</h2>
+                                <button
+                                    className="close-btn"
+                                    onClick={() => setSelectedJob(null)}
+                                    title="Close details"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                            <JobStatus jobId={selectedJob} />
+                        </section>
+                    )}
                 </div>
-            )}
+            </main>
         </div>
     );
 }

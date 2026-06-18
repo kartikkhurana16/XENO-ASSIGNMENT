@@ -17,10 +17,13 @@ exports.uploadCSV = async (req, res) => {
         // 2. register job
         createJob(jobId);
 
-        // 3. start async processing (DO NOT await)
-        runJob(jobId, req.file.path);
+        // 3. get io instance
+        const io = req.app.get("io");
 
-        // 4. respond immediately (NO result here)
+        // 4. start async processing (DO NOT await)
+        runJob(jobId, req.file.path, io);
+
+        // 5. respond immediately (NO result here)
         return res.status(200).json({
             success: true,
             message: "File uploaded successfully. Processing started.",

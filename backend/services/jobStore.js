@@ -4,16 +4,19 @@ const jobs = {};
 const createJob = (id) => {
     jobs[id] = {
         status: "processing",
-        result: null
+        result: null,
+        createdAt: new Date().toISOString()
     };
 };
 
 // update job
 const updateJob = (id, data) => {
-    jobs[id] = {
-        status: "done",
-        result: data
-    };
+    if (jobs[id]) {
+        jobs[id] = {
+            ...jobs[id],
+            ...data
+        };
+    }
 };
 
 // get job
@@ -24,3 +27,4 @@ module.exports = {
     updateJob,
     getJob
 };
+

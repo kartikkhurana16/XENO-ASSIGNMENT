@@ -1,0 +1,7 @@
+product_id,product_name,sku,quantity,unit_price,category
+PROD-001,Laptop Computer,LAPT-2024-001,5,45000.00,Electronics
+PROD-002,Wireless Mouse,MOUS-2024-002,50,1200.00,Accessories
+PROD-003,USB Cable,USBC-2024-003,150,250.00,Cables
+PROD-004,Monitor Stand,,2,3500.00,Furniture
+PROD-005,Keyboard Mechanical,KEYB-2024-005,ABC,5500.00,Peripherals
+PROD-006,Desk Lamp,LAMP-2024-006,12,2200.00,Lighting

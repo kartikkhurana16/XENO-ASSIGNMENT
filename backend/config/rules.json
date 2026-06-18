@@ -1,8 +1,33 @@
 {
   "phoneRules": {
-    "IN": 10,
-    "SG": 8
+    "IN": { "length": 10, "format": "numeric", "pattern": "^[0-9]{10}$" },
+    "SG": { "length": 8, "format": "numeric", "pattern": "^[0-9]{8}$" },
+    "US": { "length": 10, "format": "numeric", "pattern": "^[0-9]{10}$" },
+    "UK": { "length": 11, "format": "numeric", "pattern": "^[0-9]{11}$" },
+    "AU": { "length": 9, "format": "numeric", "pattern": "^[0-9]{9}$" }
   },
-  "dateFormat": "YYYY-MM-DD",
-  "requiredFields": ["name", "age", "city", "phone", "country", "date"]
+  "dateFormats": ["YYYY-MM-DD", "DD-MM-YYYY", "MM/DD/YYYY", "YYYY/MM/DD"],
+  "timeFormats": ["HH:mm:ss", "HH:mm"],
+  "paymentModes": ["CREDIT_CARD", "DEBIT_CARD", "UPI", "NET_BANKING", "WALLET", "CASH"],
+  "transactionTypes": {
+    "order": {
+      "requiredFields": ["order_id", "customer_name", "customer_phone", "customer_country", "order_date", "order_time", "total_amount", "payment_mode"],
+      "numericFields": ["total_amount"],
+      "emailFields": ["customer_email"]
+    },
+    "product": {
+      "requiredFields": ["product_id", "product_name", "sku", "quantity", "unit_price", "category"],
+      "numericFields": ["quantity", "unit_price"]
+    },
+    "payment": {
+      "requiredFields": ["transaction_id", "payment_mode", "amount", "status", "payment_date"],
+      "numericFields": ["amount"],
+      "enumFields": { "payment_mode": "paymentModes", "status": ["SUCCESS", "FAILED", "PENDING"] }
+    }
+  },
+  "commonRules": {
+    "emailPattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+    "amountPattern": "^[0-9]+(\\.[0-9]{2})?$",
+    "skuPattern": "^[A-Z0-9-]{5,20}$"
+  }
 }
