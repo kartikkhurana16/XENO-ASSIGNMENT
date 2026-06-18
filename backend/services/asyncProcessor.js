@@ -1,6 +1,4 @@
 const processCSV = require("./csvProcessor");
-const validateCSVData = require("./validator");
-const generateErrorCSV = require("./csvGenerator");
 const generateCleanedCSV = require("./cleanedDataGenerator");
 const { updateJob } = require("./jobStore");
 
@@ -13,21 +11,17 @@ const runJob = async (jobId, filePath, io) => {
             io.emit("job-update", { jobId, status: "processing" });
         }
 
-        // 2. process file
-        const data = await processCSV(filePath);
-        const result = validateCSVData(data);
+        // 2. process file (returns validated result + generated errorFile)
+        const result = await processCSV(filePath);
 
-        // 3. generate error file if needed
-        let errorFile = null;
-        if (result.invalidRows.length > 0) {
-            errorFile = await generateErrorCSV(result.invalidRows);
-        }
-
-        // 4. generate cleaned output file
+        // 3. generate cleaned output file if needed
         let cleanedFile = null;
-        if (result.validRows.length > 0) {
+        if (result.validRows && result.validRows.length > 0) {
             cleanedFile = await generateCleanedCSV(result.validRows);
         }
+
+        // use errorFile returned by processCSV (if any)
+        const errorFile = result.errorFile || null;
 
         // 5. final result
         const finalResult = {

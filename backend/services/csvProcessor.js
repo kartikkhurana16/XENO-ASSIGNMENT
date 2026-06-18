@@ -7,6 +7,7 @@ const fs = require("fs");
 const processCSV = async (filePath) => {
     const data = await parseCSV(filePath);
 
+    // validate and get structured result
     const result = validateCSVData(data);
 
     let errorFile = null;
@@ -22,10 +23,17 @@ const processCSV = async (filePath) => {
     }
 
     // Remove temporary uploaded file
-    fs.unlinkSync(filePath);
+    try {
+        fs.unlinkSync(filePath);
+    } catch (e) {
+        // log but don't fail
+        console.error("Failed to remove temp file:", e.message);
+    }
 
+    // Return the full validated result plus generated file info
     return {
-        totalRows: data.length,
+        success: result.success,
+        summary: result.summary,
         validRows: result.validRows,
         invalidRows: result.invalidRows,
         errorFile,

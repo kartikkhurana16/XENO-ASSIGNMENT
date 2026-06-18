@@ -23,9 +23,15 @@
       "requiredFields": ["transaction_id", "payment_mode", "amount", "status", "payment_date"],
       "numericFields": ["amount"],
       "enumFields": { "payment_mode": "paymentModes", "status": ["SUCCESS", "FAILED", "PENDING"] }
+    },
+    "customer": {
+      "requiredFields": ["customer_id", "customer_name", "customer_phone", "signup_date"],
+      "numericFields": [],
+      "emailFields": ["customer_email"]
     }
   },
   "commonRules": {
+    "defaultCountry": "IN",
     "emailPattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
     "amountPattern": "^[0-9]+(\\.[0-9]{2})?$",
     "skuPattern": "^[A-Z0-9-]{5,20}$"
